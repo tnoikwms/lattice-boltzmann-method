@@ -11,8 +11,8 @@ import matplotlib.animation as animation
 from matplotlib import cm
 
 ###### Flow definition #########################################################
-maxIter = 200  # Total number of time iterations.
-Re = 30.0         # Reynolds number.
+maxIter = 20000  # Total number of time iterations.
+Re = 220.0         # Reynolds number.
 nx, ny = 420, 180 # Numer of lattice nodes.
 ly = ny-1         # Height of the domain in lattice units.
 cx, cy, r = nx//4, ny//2, ny//9 # Coordinates of the cylinder.
@@ -50,7 +50,7 @@ def equilibrium(rho, u):              # Equilibrium distribution function.
 ###### Setup: cylindrical obstacle and velocity inlet with perturbation ########
 # Creation of a mask with 1/0 values, defining the shape of the obstacle.
 def obstacle_fun(x, y):
-    return (x-cx)**2+(y-cy)**2 < r**2
+    return (x-cx)**2+(y-cy)**2<r**2
 
 obstacle = fromfunction(obstacle_fun, (nx,ny))
 
@@ -101,7 +101,7 @@ for time in range(maxIter):
 
     # Visualization of the velocity.
     if (time%100==0):
-        im = plt.imshow(sqrt(u[0]**2+u[1]**2).transpose(), cmap=cm.Reds)
+        im = plt.imshow(sqrt(u[0]**2+u[1]**2).transpose(), cmap=cm.gnuplot)
         ims.append([im])
         """
         #default
@@ -109,6 +109,5 @@ for time in range(maxIter):
         plt.imshow(sqrt(u[0]**2+u[1]**2).transpose(), cmap=cm.Reds)
         plt.savefig("vel.{0:04d}.png".format(time//100))
         """
-print(type(ims))
 ani = animation.ArtistAnimation(fig,ims,interval=50)
-plt.show()
+ani.save('re=45.mp4', writer="ffmpeg",dpi=200)
